@@ -1,0 +1,69 @@
+<button class="btn team-button dropdown-toggle w-50" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="team-name">{{ currentTeam ? currentTeam.name : 'Takım Seçin' }}</span>
+    <span class="dropdown-icon"><i class="bi bi-chevron-down"></i></span>
+</button>
+
+<ul class="dropdown-menu">
+    <li *ngIf="loading()"><a class="dropdown-item">Yükleniyor...</a></li>
+
+    <li *ngIf="teams().length === 0"><a class="dropdown-item">Hiç takım yok</a></li>
+
+    <li><a class="dropdown-item border-bottom border-black" data-bs-toggle="modal" data-bs-target="#newTeamModal">
+            + Yeni Takım Ekle</a></li>
+
+    <li *ngFor="let team of teams()" (click)="selectTeam(team)">
+        <a class="dropdown-item d-flex justify-content-between align-items-center">
+            {{ team.name }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-x text-danger" viewBox="0 0 16 16" data-bs-toggle="modal" data-bs-target="#deleteTeamModal"
+                (click)="setTeamToDelete(team, $event)">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647
+               a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646
+               a.5.5 0 0 1-.708.708L8 8.707l-2.646
+               2.647a.5.5 0 0 1-.708-.708L7.293 8
+               4.646 5.354a.5.5 0 0 1 0-.708" />
+            </svg>
+        </a>
+    </li>
+
+</ul>
+
+<div class="modal fade" id="newTeamModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Takım</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"
+                    #addTeamCloseX></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" [(ngModel)]="newTeamName" placeholder="Takım adı girin" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #addTeamCloseBtn>İptal</button>
+                <button type="button" class="btn btn-primary" (click)="addNewTeam()">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteTeamModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Takım Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"
+                    #deleteTeamCloseX></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ teamNameToDelete }} takımını silmek istiyor musunuz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    #deleteTeamCloseBtn>İptal</button>
+                <button type="button" class="btn btn-danger" (click)="confirmToDeleteTeam()">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>

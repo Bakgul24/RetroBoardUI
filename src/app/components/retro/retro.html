@@ -1,0 +1,95 @@
+<div class="d-flex ">
+    <button class="btn retro-button dropdown-toggle w-50" type="button" [disabled]="isDisabled"
+        [attr.aria-disabled]="isDisabled" [attr.data-bs-toggle]="isDisabled ? null : 'dropdown'">
+        <span class="retro-name">
+            {{ _retroService.currentRetro() ? _retroService.currentRetro()!.name : 'Retro Seçin' }}
+        </span>
+        <span class="dropdown-icon"><i class="bi bi-chevron-down"></i></span>
+    </button>
+
+    <!-- Ekle button -->
+    <button class="btn retro-ekle-button w-50 ms-1" type="button" data-bs-toggle="modal" data-bs-target="#retroModal"
+        [disabled]="isDisabled">
+        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-plus-circle"
+            viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+        </svg>
+    </button>
+
+    <ul class="dropdown-menu">
+        <li *ngIf="_teamService.currentTeam() && _retroService.loading()">
+            <p class="dropdown-item">Yükleniyor…</p>
+        </li>
+        <li *ngIf="_teamService.currentTeam() && !_retroService.loading() && _retroService.retros().length === 0">
+            <p class="dropdown-item">Hiç retro yok</p>
+        </li>
+        <li *ngFor="let retro of _retroService.retros()" (click)="selectRetro(retro)">
+            <a class="dropdown-item d-flex justify-content-between align-items-center">{{ retro.name }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-x text-danger" viewBox="0 0 16 16" data-bs-toggle="modal"
+                    data-bs-target="#deleteRetroModal" (click)="setRetroToDelete(retro, $event)">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647
+               a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646
+               a.5.5 0 0 1-.708.708L8 8.707l-2.646
+               2.647a.5.5 0 0 1-.708-.708L7.293 8
+               4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="modal fade" id="deleteRetroModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Retro Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <p>Retroyu silmek istiyor musunuz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" (click)="confirmToDeleteRetro()">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="retroModal" tabindex="-1" aria-labelledby="retroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="retroModalLabel">Yeni Retro Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="retroForm">
+                    <div class="mb-3">
+                        <label for="retroName" class="form-label">Retro Adı</label>
+                        <input type="text" [(ngModel)]="newRetroName" name="retroName" class="form-control"
+                            id="retroName" placeholder="Retro adı girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="maxComments" class="form-label">Maksimum Yorum Sayısı</label>
+                        <input type="text" [(ngModel)]="maxCommentCount" name="maxComments" class="form-control"
+                            id="maxComments" placeholder="Maksimum yorum sayısını girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="maxVotes" class="form-label">Maksimum Oy Sayısı</label>
+                        <input type="text" [(ngModel)]="maxVoteCount" name="maxVotes" class="form-control" id="maxVotes"
+                            placeholder="Maksimum oy sayısını girin">
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-dark" (click)="addRetro()">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>

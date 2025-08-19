@@ -1,0 +1,10 @@
+.card-body {
+    background-color: rgb(171, 171, 169);
+    min-height: 65vh;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.button-cursor {
+    cursor: pointer;
+}

@@ -1,0 +1,43 @@
+.retro-button {
+    background-color: black;
+    border-radius: 10px;
+    color: white;
+    min-width: 200px;
+    padding: 10px 10px;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.retro-name {
+    text-align: left;
+}
+
+.add-retro {
+    margin-left: 10px;
+}
+
+.retro-button:hover {
+    border: 2px solid white;
+}
+
+.retro-ekle-button {
+    background-color: black;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    color: white;
+    min-width: 50px;
+    padding: 8px 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.retro-ekle-button:hover {
+    border: 2px solid white;
+}
