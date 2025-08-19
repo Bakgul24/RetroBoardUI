@@ -12,7 +12,7 @@ import { RetroWithSettingDto } from '../models/retroWithSettingDto';
 export class RetroService {
     private http = inject(HttpClient);
     private _teamService = inject(TeamService);
-    private apiUrl = 'https://localhost:7221/api/';
+    private apiUrl = 'https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/';
 
     retros = signal<Retro[]>([]);
     loading = signal(true);
@@ -66,7 +66,7 @@ export class RetroService {
     }
 
     addNewRetro(retroWithSetting: RetroWithSettingDto): Observable<any> {
-        const url = 'https://localhost:7221/api/Retros/add/retroWithSetting';
+        const url = 'https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Retros/add/retroWithSetting';
         return this.http.post<any>(url, retroWithSetting);
     }
 }

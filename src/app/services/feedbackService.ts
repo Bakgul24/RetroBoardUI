@@ -33,7 +33,7 @@ export class FeedbackService {
     }
 
     getFeedbacksByRetroId(retroId: string): void {
-        const url = `https://localhost:7221/api/Feedbacks/retro/${retroId}/feedbacks`;
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Feedbacks/retro/${retroId}/feedbacks`;
         this.loading.set(true);
         this.error.set(null);
 
@@ -51,17 +51,17 @@ export class FeedbackService {
     }
 
     addFeedback(feedback: Feedback): Observable<any> {
-        const url = `https://localhost:7221/api/Feedbacks/add`;
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Feedbacks/add`;
         return this.http.post<any>(url, feedback);
     }
 
     addComment(comment: Comment): Observable<any> {
-        const url = `https://localhost:7221/api/Comments/add`;
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Comments/add`;
         return this.http.post<any>(url, comment);
     }
 
     getCommentByFeedbackId(feedbackId: string): void {
-        const url = `https://localhost:7221/api/Comments/feedback/${feedbackId}/comments`
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Comments/feedback/${feedbackId}/comments`
         this.http.get<UserCommentResponseModel>(url).subscribe({
             next: (res) => {
                 this.comments.set(res.data ?? []);
@@ -75,12 +75,12 @@ export class FeedbackService {
     }
 
     voteFeedback(feedback: Feedback): Observable<any> {
-        const url = `https://localhost:7221/api/Feedbacks/vote`
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Feedbacks/vote`
         return this.http.patch<any>(url, feedback)
     }
 
     deleteFeedback(feedbackId: string): Observable<any> {
-        const url = `https://localhost:7221/api/Feedbacks/delete/${feedbackId}`
+        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Feedbacks/delete/${feedbackId}`
         return this.http.delete<any>(url);
     }
 }
