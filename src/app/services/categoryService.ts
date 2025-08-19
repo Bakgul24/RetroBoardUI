@@ -32,7 +32,7 @@ export class CategoryService {
     getCategoriesByRetroId(retroId: string): void {
         this.loading.set(true);
         this.error.set(null);
-        const url = `https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/RetroCategories/retro/${retroId}/categories`;
+        const url = `https://localhost:7221/api/RetroCategories/retro/${retroId}/categories`;
         this.http.get<CategoryResponseModel>(url).subscribe({
             next: (res) => {
                 this.categories.set(res.data ?? []);

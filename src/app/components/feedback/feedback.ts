@@ -7,7 +7,6 @@ import { Comment } from '../../models/comment';
 import { FormsModule } from '@angular/forms';
 import { RetroService } from '../../services/retroService';
 
-
 @Component({
   selector: 'app-feedback',
   imports: [CommonModule, FormsModule],
@@ -84,7 +83,6 @@ export class FeedbackComponent {
   }
 
   voteFeedback(feedback: Feedback): void {
-    console.log("girdi")
     this._feedbackService.voteFeedback(feedback).subscribe(() => {
       alert("Oy verildi.")
       this._feedbackService.getFeedbacksByRetroId(this._retroService.currentRetro()?.id!);

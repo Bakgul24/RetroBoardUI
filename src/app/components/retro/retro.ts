@@ -1,38 +1,84 @@
-// retro.component.ts
-import { Component, Input } from '@angular/core';
+import { Component, Input, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RetroService } from '../../services/retroService';
-import { Retro } from '../../models/retro';
-import { RetroWithSettingDto } from '../../models/retroWithSettingDto';
 import { CategoryService } from '../../services/categoryService';
 import { FeedbackService } from '../../services/feedbackService';
 import { TeamService } from '../../services/teamService';
 import { FormsModule } from '@angular/forms';
-import { RetroSettingDto } from '../../models/retroSettingDto';
+import { RetroWithSettingDto } from '../../models/retroWithSettingDto';
 import { Team } from '../../models/team';
+import { Retro } from '../../models/retro';
 
 @Component({
     selector: 'app-retro',
     standalone: true,
     imports: [CommonModule, FormsModule],
     templateUrl: './retro.html',
-    styleUrl: './retro.css'
+    styleUrls: ['./retro.css']
 })
-export class RetroComponent {
+export class RetroComponent implements AfterViewInit {
     constructor(
         public _retroService: RetroService,
         public _categoryService: CategoryService,
         public _feedbackService: FeedbackService,
         public _teamService: TeamService
     ) { }
+
     currentTeam: Team | null = null;
     retroIdToDelete: string | null = null;
     retroNameToDelete: string | null = null;
+
+    newCategory: string = '';
+    newCategories: string[] = [];
+    errorMessage: string = '';
 
     newRetroName = '';
     maxVoteCount = '';
     maxCommentCount = '';
 
+    ngAfterViewInit() {
+        const retroModal = document.getElementById('retroModal');
+        if (retroModal) {
+            retroModal.addEventListener('show.bs.modal', () => {
+                this.resetModalData();
+            });
+        }
+    }
+
+    resetModalData() {
+        this.newRetroName = '';
+        this.maxVoteCount = '';
+        this.maxCommentCount = '';
+        this.newCategory = '';
+        this.newCategories = [];
+        this.errorMessage = '';
+    }
+
+    closeModal() {
+        const modal = document.getElementById('retroModal');
+        if (modal) {
+            modal.style.display = 'none';  // Hide the modal manually
+        }
+        this.resetModalData();
+    }
+
+    addCategory() {
+        if (this.newCategories.length >= 3) {
+            this.errorMessage = 'En fazla 3 kategori ekleyebilirsiniz!';
+            return;
+        }
+
+        if (this.newCategory.trim()) {
+            this.newCategories.push(this.newCategory.trim());
+            this.newCategory = '';
+            this.errorMessage = '';
+        }
+    }
+
+    removeCategory(index: number) {
+        this.newCategories.splice(index, 1);
+        this.errorMessage = '';
+    }
 
     get isDisabled(): boolean {
         return !this._teamService.currentTeam() || this._retroService.loading();
@@ -41,7 +87,7 @@ export class RetroComponent {
     setRetroToDelete(retro: Retro, event: MouseEvent) {
         event.stopPropagation();
         this.retroIdToDelete = retro.id!;
-        this.retroNameToDelete = (retro as any).name ?? null;
+        this.retroNameToDelete = retro.name ?? null;
     }
 
     selectRetro(retro: Retro): void {
@@ -97,19 +143,26 @@ export class RetroComponent {
                     key: "VoteCount",
                     value: this.maxVoteCount,
                     description: ""
-                }
-            ]
+                },
+            ],
+            categories: this.newCategories,
         };
 
         this._retroService.addNewRetro(retroWithSetting).subscribe({
             next: () => {
                 alert('Retro başarıyla eklendi!');
                 this._retroService.getRetrosByTeamId(teamId);
+
+                const closeButton = document.querySelector<HTMLButtonElement>(
+                    '#retroModal [data-bs-dismiss="modal"]'
+                );
+                if (closeButton) {
+                    closeButton.click();
+                }
             },
             error: (err) => {
                 console.error('Retro eklenirken hata oluştu:', err);
             }
         });
     }
-
 }
