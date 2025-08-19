@@ -6,6 +6,7 @@ import { Team } from '../../models/team';
 import { RetroService } from '../../services/retroService';
 import { FormsModule } from '@angular/forms';
 import { catchError, of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-team',
@@ -31,6 +32,7 @@ export class TeamComponent implements OnInit {
   constructor(
     private _teamService: TeamService,
     private _retroService: RetroService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit(): void { this.load(); }
@@ -48,6 +50,14 @@ export class TeamComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  showSucces(message: string) {
+    this.toast.success(message, "Başarılı!")
+  }
+
+  showDanger(message: string) {
+    this.toast.warning(message, "Başarısız!")
   }
 
   selectTeam(team: Team): void {
@@ -69,7 +79,7 @@ export class TeamComponent implements OnInit {
     this._teamService.deleteTeam(this.teamIdToDelete).pipe(
       catchError((err) => {
         this.error.set(err?.message ?? 'Takım silinirken hata oluştu');
-        alert('Takım silinemedi!');
+        this.showDanger("Takım Silinemedi.");
         this.loading.set(false);
         return of(null);
       })
@@ -79,8 +89,7 @@ export class TeamComponent implements OnInit {
           this.currentTeam = null;
           this._teamService.setCurrentTeam(null as any);
         }
-
-        alert('Takım silindi.');
+        this.showSucces("Takım Silindi.")
       }
       this.load();
       this.deleteTeamCloseBtn?.nativeElement.click();
@@ -95,13 +104,13 @@ export class TeamComponent implements OnInit {
     this._teamService.addTeam(this.newTeamName).pipe(
       catchError((err) => {
         this.error.set(err?.message ?? 'Takım eklenirken hata oluştu');
-        alert('Takım Eklenemedi!');
+        this.showDanger("Takım Eklenemedi.")
         this.loading.set(false);
         return of(null);
       })
     ).subscribe((response) => {
       if (response) {
-        alert('Takım Eklendi.');
+        this.showSucces("Takım Eklendi.")
         this.load();
         this.addTeamCloseBtn?.nativeElement.click();
         this.newTeamName = '';

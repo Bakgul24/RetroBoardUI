@@ -6,6 +6,7 @@ import { Feedback } from '../../models/feedback';
 import { Comment } from '../../models/comment';
 import { FormsModule } from '@angular/forms';
 import { RetroService } from '../../services/retroService';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-feedback',
@@ -22,8 +23,17 @@ export class FeedbackComponent {
   currentCategoryId: string | null = null;
 
   constructor(public _feedbackService: FeedbackService,
-    private _retroService: RetroService
+    private _retroService: RetroService,
+    private toast: ToastrService
   ) { }
+
+  showSucces(message: string) {
+    this.toast.success(message, "Başarılı")
+  }
+
+  showDanger(message: string) {
+    this.toast.warning(message, "Başarısız")
+  }
 
   openModal(categoryId: string | null) {
     if (!categoryId) return;
@@ -76,7 +86,7 @@ export class FeedbackComponent {
       feedbackId: this.feedbackIdForComment
     };
     this._feedbackService.addComment(comment).subscribe(() => {
-      alert("Yorumunuz eklendi.")
+      this.showSucces("Yorumunuz Eklendi.");
       this._feedbackService.getCommentByFeedbackId(this.feedbackIdForComment);
       this.newMessageContent = '';
     });
@@ -84,14 +94,14 @@ export class FeedbackComponent {
 
   voteFeedback(feedback: Feedback): void {
     this._feedbackService.voteFeedback(feedback).subscribe(() => {
-      alert("Oy verildi.")
+      this.showSucces("Oy Verildi.")
       this._feedbackService.getFeedbacksByRetroId(this._retroService.currentRetro()?.id!);
     })
   }
 
   deleteFeedback(feedbackId: string): void {
     this._feedbackService.deleteFeedback(feedbackId).subscribe(() => {
-      alert("feedback silindi");
+      this.showSucces("Feedback Silindi.")
       this.closeCommentModal();
       this._feedbackService.getFeedbacksByRetroId(this._retroService.currentRetro()?.id!);
     });

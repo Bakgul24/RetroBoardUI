@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { RetroWithSettingDto } from '../../models/retroWithSettingDto';
 import { Team } from '../../models/team';
 import { Retro } from '../../models/retro';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-retro',
@@ -21,7 +22,8 @@ export class RetroComponent implements AfterViewInit {
         public _retroService: RetroService,
         public _categoryService: CategoryService,
         public _feedbackService: FeedbackService,
-        public _teamService: TeamService
+        public _teamService: TeamService,
+        private toast: ToastrService
     ) { }
 
     currentTeam: Team | null = null;
@@ -35,6 +37,14 @@ export class RetroComponent implements AfterViewInit {
     newRetroName = '';
     maxVoteCount = '';
     maxCommentCount = '';
+
+    showSucces(message: string) {
+        this.toast.success(message, "Başarılı")
+    }
+
+    showDanger() {
+        this.toast.warning("Takım Seçilmedi", "Başarısız")
+    }
 
     ngAfterViewInit() {
         const retroModal = document.getElementById('retroModal');
@@ -69,11 +79,16 @@ export class RetroComponent implements AfterViewInit {
         }
 
         if (this.newCategory.trim()) {
-            this.newCategories.push(this.newCategory.trim());
-            this.newCategory = '';
-            this.errorMessage = '';
+            if (this.newCategories.includes(this.newCategory.trim())) {
+                this.errorMessage = 'Bu kategori zaten mevcut!';
+            } else {
+                this.newCategories.push(this.newCategory.trim());
+                this.newCategory = '';
+                this.errorMessage = '';
+            }
         }
     }
+
 
     removeCategory(index: number) {
         this.newCategories.splice(index, 1);
@@ -113,7 +128,7 @@ export class RetroComponent implements AfterViewInit {
 
                 this.retroIdToDelete = null;
                 this.retroNameToDelete = null;
-                alert('Retro silindi.');
+                this.showSucces("Retro Silindi");
                 this._retroService.setCurrentRetro(null);
             },
             error: (err) => {
@@ -125,7 +140,7 @@ export class RetroComponent implements AfterViewInit {
     addRetro(): void {
         const selectedTeam = this._teamService.currentTeam();
         if (!selectedTeam) {
-            alert('Bir takım seçilmedi!');
+            this.showDanger();
             return;
         }
         const teamId = selectedTeam.id;
@@ -150,7 +165,7 @@ export class RetroComponent implements AfterViewInit {
 
         this._retroService.addNewRetro(retroWithSetting).subscribe({
             next: () => {
-                alert('Retro başarıyla eklendi!');
+                this.showSucces("Retro Eklendi.");
                 this._retroService.getRetrosByTeamId(teamId);
 
                 const closeButton = document.querySelector<HTMLButtonElement>(
