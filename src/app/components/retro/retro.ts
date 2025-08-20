@@ -1,10 +1,10 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RetroService } from '../../services/retroService';
 import { CategoryService } from '../../services/categoryService';
 import { FeedbackService } from '../../services/feedbackService';
 import { TeamService } from '../../services/teamService';
-import { FormsModule } from '@angular/forms';
 import { RetroWithSettingDto } from '../../models/retroWithSettingDto';
 import { Team } from '../../models/team';
 import { Retro } from '../../models/retro';
@@ -31,19 +31,28 @@ export class RetroComponent implements AfterViewInit {
     retroNameToDelete: string | null = null;
 
     newCategory: string = '';
-    newCategories: string[] = [];
+    newCategories: string[] = [
+        "İyi Gidenler",
+        "Geliştirmemiz Gerekenler",
+        "Kötü Gidenler"
+    ];
     errorMessage: string = '';
+    errorRetroMessage: string = '';
+    errorCategoryMessage: string = '';
 
     newRetroName = '';
-    maxVoteCount = '';
-    maxCommentCount = '';
+
+    maxVoteCountStr = '';
+    maxCommentCountStr = '';
+
+    errors = { maxVote: false, maxComment: false };
 
     showSucces(message: string) {
-        this.toast.success(message, "Başarılı")
+        this.toast.success(message, 'Başarılı');
     }
 
     showDanger() {
-        this.toast.warning("Takım Seçilmedi", "Başarısız")
+        this.toast.warning('Takım Seçilmedi', 'Başarısız');
     }
 
     ngAfterViewInit() {
@@ -57,36 +66,51 @@ export class RetroComponent implements AfterViewInit {
 
     resetModalData() {
         this.newRetroName = '';
-        this.maxVoteCount = '';
-        this.maxCommentCount = '';
+        this.maxVoteCountStr = '';
+        this.maxCommentCountStr = '';
         this.newCategory = '';
-        this.newCategories = [];
+
+        this.newCategories = [
+            "İyi Gidenler",
+            "Geliştirmemiz Gerekenler",
+            "Kötü Gidenler"
+        ];
+
         this.errorMessage = '';
+        this.errorRetroMessage = '';
+        this.errorCategoryMessage = '';
+        this.errors = { maxVote: false, maxComment: false };
     }
 
     closeModal() {
         const modal = document.getElementById('retroModal');
         if (modal) {
-            modal.style.display = 'none';  // Hide the modal manually
+            modal.style.display = 'none';
         }
         this.resetModalData();
     }
 
     addCategory() {
+        // Maksimum 3
         if (this.newCategories.length >= 3) {
             this.errorMessage = 'En fazla 3 kategori ekleyebilirsiniz!';
             return;
         }
 
-        if (this.newCategory.trim()) {
-            if (this.newCategories.includes(this.newCategory.trim())) {
-                this.errorMessage = 'Bu kategori zaten mevcut!';
-            } else {
-                this.newCategories.push(this.newCategory.trim());
-                this.newCategory = '';
-                this.errorMessage = '';
-            }
+        const trimmed = this.newCategory.trim();
+        if (!trimmed) return;
+
+        const exists = this.newCategories.some(
+            c => c.toLocaleLowerCase('tr-TR') === trimmed.toLocaleLowerCase('tr-TR')
+        );
+        if (exists) {
+            this.errorMessage = 'Bu kategori zaten mevcut!';
+            return;
         }
+
+        this.newCategories.push(trimmed);
+        this.newCategory = '';
+        this.errorMessage = '';
     }
 
 
@@ -117,8 +141,8 @@ export class RetroComponent implements AfterViewInit {
 
         this._retroService.deleteRetroById(this.retroIdToDelete).subscribe({
             next: () => {
-                this._retroService.retros.update(retros =>
-                    retros.filter(r => r.id !== this.retroIdToDelete)
+                this._retroService.retros.update((retros) =>
+                    retros.filter((r) => r.id !== this.retroIdToDelete)
                 );
 
                 const closeButton = document.querySelector<HTMLButtonElement>(
@@ -128,7 +152,7 @@ export class RetroComponent implements AfterViewInit {
 
                 this.retroIdToDelete = null;
                 this.retroNameToDelete = null;
-                this.showSucces("Retro Silindi");
+                this.showSucces('Retro Silindi');
                 this._retroService.setCurrentRetro(null);
             },
             error: (err) => {
@@ -137,7 +161,30 @@ export class RetroComponent implements AfterViewInit {
         });
     }
 
+    private isIntString(v: string): boolean {
+        return /^\d+$/.test(v);
+    }
+
+    onMaxVoteChange(v: string) {
+        this.errors.maxVote = v !== '' && !this.isIntString(v);
+    }
+
+    onMaxCommentChange(v: string) {
+        this.errors.maxComment = v !== '' && !this.isIntString(v);
+    }
+
     addRetro(): void {
+        // En az 1 kategori şart
+        if (!this.newCategories || this.newCategories.length === 0) {
+            this.errorCategoryMessage = 'Kategori eklemek zorundasınız!';
+            return;
+        }
+
+        if (this.newRetroName.trim().length === 0) {
+            this.errorRetroMessage = 'Retro adı girmek zorundasınız!';
+            return;
+        }
+
         const selectedTeam = this._teamService.currentTeam();
         if (!selectedTeam) {
             this.showDanger();
@@ -145,39 +192,50 @@ export class RetroComponent implements AfterViewInit {
         }
         const teamId = selectedTeam.id;
 
+        // ⬇️ AYARLARI OPSİYONEL OLARAK OLUŞTUR
+        const settings: { key: string; value: string; description: string }[] = [];
+
+        const voteStr = this.maxVoteCountStr.trim();
+        const commentStr = this.maxCommentCountStr.trim();
+
+        // Eğer doluysa integer kontrolü yap, geçerliyse ekle
+        if (voteStr !== '') {
+            if (!this.isIntString(voteStr)) {
+                this.errorRetroMessage = 'Lütfen sadece tam sayı girin.';
+                return;
+            }
+            settings.push({ key: 'VoteCount', value: voteStr, description: '' });
+        }
+
+        if (commentStr !== '') {
+            if (!this.isIntString(commentStr)) {
+                this.errorRetroMessage = 'Lütfen sadece tam sayı girin.';
+                return;
+            }
+            settings.push({ key: 'CommentCount', value: commentStr, description: '' });
+        }
+
         const retroWithSetting: RetroWithSettingDto = {
             name: this.newRetroName,
             teamId: teamId,
-            settings: [
-                {
-                    key: "CommentCount",
-                    value: this.maxCommentCount,
-                    description: ""
-                },
-                {
-                    key: "VoteCount",
-                    value: this.maxVoteCount,
-                    description: ""
-                },
-            ],
-            categories: this.newCategories,
+            settings,               // ⬅️ boş da olabilir, sadece girilenler gider
+            categories: this.newCategories
         };
 
         this._retroService.addNewRetro(retroWithSetting).subscribe({
             next: () => {
-                this.showSucces("Retro Eklendi.");
+                this.showSucces('Retro Eklendi.');
                 this._retroService.getRetrosByTeamId(teamId);
 
                 const closeButton = document.querySelector<HTMLButtonElement>(
                     '#retroModal [data-bs-dismiss="modal"]'
                 );
-                if (closeButton) {
-                    closeButton.click();
-                }
+                closeButton?.click();
             },
             error: (err) => {
                 console.error('Retro eklenirken hata oluştu:', err);
             }
         });
     }
+
 }

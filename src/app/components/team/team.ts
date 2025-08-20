@@ -24,16 +24,24 @@ export class TeamComponent implements OnInit {
   teams = signal<Team[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  @ViewChild('addTeamCloseBtn') addTeamCloseBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('newTeamModal') newTeamModal!: ElementRef;
   teamIdToDelete: string | null = null;
   teamNameToDelete: string | null = null;
   showModal: any;
+  errorMessage = '';
+  @ViewChild('addTeamCloseBtn') addTeamCloseBtn!: ElementRef<HTMLButtonElement>;
+
 
   constructor(
     private _teamService: TeamService,
     private _retroService: RetroService,
     private toast: ToastrService
   ) { }
+
+  resetAddTeamModal() {
+    this.errorMessage = '';
+    this.newTeamName = '';
+  }
 
   ngOnInit(): void { this.load(); }
 
@@ -99,6 +107,10 @@ export class TeamComponent implements OnInit {
   }
 
   addNewTeam(): void {
+    if (this.newTeamName.trim() == '') {
+      this.errorMessage = 'Takım ismi girmek zorundasınız!'
+      return;
+    }
     if (!this.newTeamName.trim()) return;
 
     this._teamService.addTeam(this.newTeamName).pipe(
@@ -112,8 +124,9 @@ export class TeamComponent implements OnInit {
       if (response) {
         this.showSucces("Takım Eklendi.")
         this.load();
-        this.addTeamCloseBtn?.nativeElement.click();
+        this.resetAddTeamModal();
         this.newTeamName = '';
+        this.addTeamCloseBtn?.nativeElement.click();
       }
     });
   }

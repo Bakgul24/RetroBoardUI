@@ -41,3 +41,7 @@
 .retro-ekle-button:hover {
     border: 2px solid white;
 }
+
+.form-necessary {
+    color: red;
+}

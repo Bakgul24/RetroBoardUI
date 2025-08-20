@@ -22,6 +22,8 @@ export class FeedbackComponent {
   feedbackContent = '';
   currentCategoryId: string | null = null;
 
+  errorMessage = '';
+
   constructor(public _feedbackService: FeedbackService,
     private _retroService: RetroService,
     private toast: ToastrService
@@ -46,6 +48,7 @@ export class FeedbackComponent {
     if (!this.currentCategoryId) return;
     const modal = document.getElementById(`addFeedbackModal-${this.currentCategoryId}`);
     if (modal) modal.style.display = 'none';
+    this.errorMessage = '';
   }
 
   openCommentModal(feedback: Feedback) {
@@ -61,9 +64,14 @@ export class FeedbackComponent {
     if (modal) modal.style.display = 'none';
     this.feedbackIdForComment = '';
     this.feedbackContent = '';
+    this.errorMessage = '';
   }
 
   addFeedback(): void {
+    if (this.newFeedbackContent == '') {
+      this.errorMessage = "Boş görüş ekleyemezsiniz!"
+      return;
+    }
     if (this.newFeedbackContent.trim() && this.currentCategoryId) {
       const addFeedback: Feedback = {
         retroId: this._retroService.currentRetro()?.id,
@@ -73,6 +81,7 @@ export class FeedbackComponent {
         score: '0'
       };
       this._feedbackService.addFeedback(addFeedback).subscribe(() => {
+        this.showSucces("Feedback eklendi.");
         this.newFeedbackContent = '';
         this.closeModal();
         this._feedbackService.getFeedbacksByRetroId(this._retroService.currentRetro()!.id!);
@@ -81,6 +90,10 @@ export class FeedbackComponent {
   }
 
   addComment(): void {
+    if (this.newMessageContent == '') {
+      this.errorMessage = 'Boş Yorum Ekleyemezsiniz!'
+      return;
+    }
     const comment: Comment = {
       content: this.newMessageContent,
       feedbackId: this.feedbackIdForComment

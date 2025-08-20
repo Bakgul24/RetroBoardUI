@@ -69,22 +69,35 @@
             <div class="modal-body">
                 <form id="retroForm">
                     <div class="mb-3">
-                        <label for="retroName" class="form-label">Retro Adı</label>
+                        <label for="retroName" class="form-label">Retro Adı<span class="form-necessary">
+                                *</span></label>
                         <input type="text" [(ngModel)]="newRetroName" name="retroName" class="form-control"
                             id="retroName" placeholder="Retro adı girin">
                     </div>
+                    <div *ngIf="errorRetroMessage" class="text-danger mt-2">
+                        {{ errorRetroMessage }}
+                    </div>
                     <div class="mb-3">
                         <label for="maxComments" class="form-label">Maksimum Yorum Sayısı</label>
-                        <input type="text" [(ngModel)]="maxCommentCount" name="maxComments" class="form-control"
-                            id="maxComments" placeholder="Maksimum yorum sayısını girin">
+                        <input type="text" id="maxComments" name="maxComments" class="form-control"
+                            placeholder="Maksimum yorum sayısını girin" [(ngModel)]="maxCommentCountStr"
+                            (ngModelChange)="onMaxCommentChange($event)" [class.is-invalid]="errors.maxComment"
+                            inputmode="numeric" pattern="\d*" />
+                        <div class="invalid-feedback">Lütfen sadece tam sayı girin.</div>
                     </div>
+
                     <div class="mb-3">
                         <label for="maxVotes" class="form-label">Maksimum Oy Sayısı</label>
-                        <input type="text" [(ngModel)]="maxVoteCount" name="maxVotes" class="form-control" id="maxVotes"
-                            placeholder="Maksimum oy sayısını girin">
+                        <input type="text" id="maxVotes" name="maxVotes" class="form-control"
+                            placeholder="Maksimum oy sayısını girin" [(ngModel)]="maxVoteCountStr"
+                            (ngModelChange)="onMaxVoteChange($event)" [class.is-invalid]="errors.maxVote"
+                            inputmode="numeric" pattern="\d*" />
+                        <div class="invalid-feedback">Lütfen sadece tam sayı girin.</div>
                     </div>
+
                     <div class="mb-3">
-                        <label for="kategoriInput" class="form-label">Kategori Ekle</label>
+                        <label for="kategoriInput" class="form-label">Kategori Ekle
+                            <span class="form-necessary" *ngIf="newCategories.length == 0">*</span></label>
                         <div class="input-group">
                             <input type="text" [(ngModel)]="newCategory" name="kategoriInput" id="kategoriInput"
                                 class="form-control" placeholder="Kategori girin">
@@ -102,6 +115,9 @@
                             <button class="btn btn-sm btn-danger" (click)="removeCategory(i)">Sil</button>
                         </li>
                     </ul>
+                    <div *ngIf="errorCategoryMessage" class="text-danger mt-2">
+                        {{ errorCategoryMessage }}
+                    </div>
                 </form>
             </div>
 

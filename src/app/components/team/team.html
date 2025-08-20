@@ -28,7 +28,8 @@
 
 </ul>
 
-<div class="modal fade" id="newTeamModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="newTeamModal" tabindex="-1" aria-hidden="true" #newTeamModal
+    (hidden.bs.modal)="resetAddTeamModal()" (shown.bs.modal)="resetAddTeamModal()">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -38,6 +39,9 @@
             </div>
             <div class="modal-body">
                 <input type="text" class="form-control" [(ngModel)]="newTeamName" placeholder="Takım adı girin" />
+                <div *ngIf="errorMessage" class="text-danger mt-2">
+                    {{ errorMessage }}
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #addTeamCloseBtn>İptal</button>
