@@ -174,7 +174,6 @@ export class RetroComponent implements AfterViewInit {
     }
 
     addRetro(): void {
-        // En az 1 kategori şart
         if (!this.newCategories || this.newCategories.length === 0) {
             this.errorCategoryMessage = 'Kategori eklemek zorundasınız!';
             return;
@@ -192,13 +191,11 @@ export class RetroComponent implements AfterViewInit {
         }
         const teamId = selectedTeam.id;
 
-        // ⬇️ AYARLARI OPSİYONEL OLARAK OLUŞTUR
         const settings: { key: string; value: string; description: string }[] = [];
 
         const voteStr = this.maxVoteCountStr.trim();
         const commentStr = this.maxCommentCountStr.trim();
 
-        // Eğer doluysa integer kontrolü yap, geçerliyse ekle
         if (voteStr !== '') {
             if (!this.isIntString(voteStr)) {
                 this.errorRetroMessage = 'Lütfen sadece tam sayı girin.';
@@ -218,7 +215,7 @@ export class RetroComponent implements AfterViewInit {
         const retroWithSetting: RetroWithSettingDto = {
             name: this.newRetroName,
             teamId: teamId,
-            settings,               // ⬅️ boş da olabilir, sadece girilenler gider
+            settings,
             categories: this.newCategories
         };
 

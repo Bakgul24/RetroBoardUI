@@ -17,8 +17,13 @@
 
 .open-modal-btn {
     background-color: transparent;
-    border: none;
+    border: 1px solid transparent;
     width: 285px;
+    transition: transform 0.3s ease;
+}
+
+.open-modal-btn:hover {
+    border: 1px solid black;
 }
 
 .modal {
