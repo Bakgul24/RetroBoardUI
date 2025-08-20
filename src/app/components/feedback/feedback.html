@@ -88,12 +88,16 @@
                 <div class="feedback-content">
                     <p><strong>{{ feedbackContent }}</strong></p>
                 </div>
-                <ng-container *ngFor="let comment of _feedbackService.comments()">
-                    <div *ngIf="comment.feedbackId == feedbackIdForComment" class="comment-balloon">
-                        {{comment.content}}
-                    </div>
-                </ng-container>
-                <textarea [(ngModel)]="newMessageContent" placeholder="Yorumunuzu giriniz..." rows="4"></textarea>
+
+                <div class="comments-scroll overflow-auto" style="max-height: 235px;">
+                    <ng-container *ngFor="let comment of _feedbackService.comments()">
+                        <div *ngIf="comment.feedbackId == feedbackIdForComment" class="comment-balloon">
+                            {{ comment.content }}
+                        </div>
+                    </ng-container>
+                </div>
+                <textarea class="mt-3" [(ngModel)]="newMessageContent" placeholder="Yorumunuzu giriniz..."
+                    rows="2"></textarea>
             </div>
             <div *ngIf="errorMessage" class="text-danger mt-2">
                 {{ errorMessage }}
