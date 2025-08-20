@@ -7,7 +7,7 @@ import { Team } from '../models/team';
 @Injectable({ providedIn: 'root' })
 export class TeamService {
     private http = inject(HttpClient);
-    private apiUrl = 'https://localhost:7221/api/Teams/';
+    private apiUrl = 'https://retroapi20250819154156-dsfbade7bxh7fca7.uaenorth-01.azurewebsites.net/api/Teams/';
 
     private _currentTeam = signal<Team | null>(null);
     currentTeam = this._currentTeam;
