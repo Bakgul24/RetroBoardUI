@@ -1,5 +1,4 @@
 .card-body {
-    background-color: rgb(171, 171, 169);
     min-height: 60vh;
     max-height: 60vh;
     overflow-y: auto;
@@ -7,4 +6,15 @@
 
 .button-cursor {
     cursor: pointer;
+}
+
+.card {
+    background-color: transparent;
+    border: none;
+    box-shadow: -5px 3px 10px #222;
+}
+
+.card-header {
+    background-color: #222;
+    color: white;
 }

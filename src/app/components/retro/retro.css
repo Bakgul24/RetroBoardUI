@@ -1,5 +1,5 @@
 .retro-button {
-    background-color: black;
+    background-color: #222;
     border-radius: 10px;
     color: white;
     min-width: 200px;
@@ -28,7 +28,7 @@
 }
 
 .retro-ekle-button {
-    background-color: black;
+    background-color: #222;
     border-radius: 10px;
     border: 2px solid transparent;
     color: white;
