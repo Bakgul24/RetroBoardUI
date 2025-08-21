@@ -1,5 +1,6 @@
 .card-content {
     background-color: white;
+    box-shadow: -5px 3px 10px #222;
 }
 
 .feedback-icon {
@@ -16,6 +17,7 @@
 }
 
 .open-modal-btn {
+    box-shadow: -5px 3px 10px #222;
     background-color: transparent;
     border: 1px solid transparent;
     width: 285px;
@@ -58,7 +60,7 @@
 }
 
 .modal-header {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #222;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -107,6 +107,11 @@ export class TeamComponent implements OnInit {
   }
 
   addNewTeam(): void {
+    if (this.newTeamName.trim().length > 15) {
+      this.errorMessage = "Takım ismi 15 karakterden fazla olamaz.";
+      return;
+    }
+
     if (this.newTeamName.trim() == '') {
       this.errorMessage = 'Takım ismi girmek zorundasınız!'
       return;

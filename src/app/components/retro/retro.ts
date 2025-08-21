@@ -91,8 +91,7 @@ export class RetroComponent implements AfterViewInit {
     }
 
     addCategory() {
-        // Maksimum 3
-        if (this.newCategories.length >= 3) {
+        if (this.newCategories.length >= 4) {
             this.errorMessage = 'En fazla 3 kategori ekleyebilirsiniz!';
             return;
         }
@@ -176,6 +175,11 @@ export class RetroComponent implements AfterViewInit {
     addRetro(): void {
         if (!this.newCategories || this.newCategories.length === 0) {
             this.errorCategoryMessage = 'Kategori eklemek zorundasınız!';
+            return;
+        }
+
+        if (this.newRetroName.trim().length > 15) {
+            this.errorRetroMessage = "Retro adı 15 karakterden fazla olamaz.";
             return;
         }
 

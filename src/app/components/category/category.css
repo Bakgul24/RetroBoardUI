@@ -18,3 +18,21 @@
     background-color: #222;
     color: white;
 }
+
+.card-body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.card-body::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
