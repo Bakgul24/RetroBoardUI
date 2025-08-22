@@ -12,6 +12,7 @@
 }
 
 .dropdown-item {
+    min-width: 197px;
     cursor: pointer;
 }
 

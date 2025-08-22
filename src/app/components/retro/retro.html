@@ -7,7 +7,6 @@
         <span class="dropdown-icon"><i class="bi bi-chevron-down"></i></span>
     </button>
 
-    <!-- Ekle button -->
     <button class="btn retro-ekle-button w-50 ms-1" type="button" data-bs-toggle="modal" data-bs-target="#retroModal"
         [disabled]="isDisabled">
         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-plus-circle"
@@ -68,7 +67,7 @@
             </div>
             <div class="modal-body">
                 <form id="retroForm">
-                    <div class="mb-3">
+                    <div class="mb-1">
                         <label for="retroName" class="form-label">Retro Adı<span class="form-necessary">
                                 *</span></label>
                         <input type="text" [(ngModel)]="newRetroName" name="retroName" class="form-control"
@@ -77,7 +76,7 @@
                     <div *ngIf="errorRetroMessage" class="text-danger mt-2">
                         {{ errorRetroMessage }}
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-1">
                         <label for="maxComments" class="form-label">Maksimum Yorum Sayısı</label>
                         <input type="text" id="maxComments" name="maxComments" class="form-control"
                             placeholder="Maksimum yorum sayısını girin" [(ngModel)]="maxCommentCountStr"
@@ -86,7 +85,7 @@
                         <div class="invalid-feedback">Lütfen sadece tam sayı girin.</div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-1">
                         <label for="maxVotes" class="form-label">Maksimum Oy Sayısı</label>
                         <input type="text" id="maxVotes" name="maxVotes" class="form-control"
                             placeholder="Maksimum oy sayısını girin" [(ngModel)]="maxVoteCountStr"

@@ -14,7 +14,7 @@
 
 .dropdown-item {
     cursor: pointer;
-    max-width: 197px;
+    min-width: 197px;
     white-space: nowrap;
     overflow-x: auto;
 }

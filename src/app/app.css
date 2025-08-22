@@ -6,3 +6,19 @@
 .nav-border {
     border-bottom: 2px solid #222;
 }
+
+.google-modal {
+    display: block;
+    background-color: rgb(0, 0, 0, 0.5);
+}
+
+.google-modal .modal-content {
+    width: 400px;
+    height: 200px;
+}
+
+.modal-close {
+    background-color: transparent;
+    border: none;
+    color: red;
+}
